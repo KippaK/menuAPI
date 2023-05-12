@@ -136,6 +136,16 @@ int Menu::exit() {
     return activePosition;
 }
 
+/*
+BOX CHARACTERS
+│   179
+┐   191
+└   192
+─   196
+┘   217
+┌   218
+*/
+
 void Menu::print() {
     int menuWidth = maxOptionLength + 4;
     system("CLS");
