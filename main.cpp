@@ -1,6 +1,6 @@
 #include <iostream>
 #include <conio.h>
-#include "menuapi.h"
+#include "menu.h"
 
 #define KEY_UP 72
 #define KEY_DOWN 80
@@ -11,22 +11,8 @@ using namespace std;
 
 
 int main() {
-    Menu menu("", {"Home", "Previous", "Next", "Exit"});
-    menu.print();
-    int input;
-    int selectedOption;
-    for (;;) {
-        input = getch();
-        if (input == KEY_DOWN) {
-            menu.moveDown();
-        }
-        if (input == KEY_UP) {
-            menu.moveUp();
-        }
-        if (input == ' ') {
-            selectedOption = menu.exit();
-            break;
-        }
-    }
-    cout << "Selected option: " << menu.getOption(selectedOption) << endl;
+    Menu menu("", {"Home", "Previous", "Next", "Exit"}, KEY_UP, KEY_DOWN, KEY_RIGHT);
+
+    menu.start();
+    cout << "Selected option: " << menu.getValue() << endl;
 }
