@@ -35,9 +35,11 @@ public:
     void moveUp();
     void print();
 
-private:
+protected:
     string header;
     vector<string> options;
+
+private:
     int activePosition;
     int maxOptionLength;
 };
