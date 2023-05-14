@@ -132,10 +132,6 @@ void MenuAPI::moveUp() {
     print();
 }
 
-int MenuAPI::exit() {
-    return activePosition;
-}
-
 /*
 BOX CHARACTERS
 │   179

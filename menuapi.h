@@ -33,8 +33,6 @@ public:
 
     void moveDown();
     void moveUp();
-    int exit();
-
     void print();
 
 private:
