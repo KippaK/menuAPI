@@ -6,13 +6,13 @@ using   std::string,
 
 
 
-class Menu
+class MenuAPI
 {
 public:
-    Menu();
-    Menu(string aHeader);
-    Menu(string aHeader, vector<string> aOptions);
-    ~Menu();
+    MenuAPI();
+    MenuAPI(string aHeader);
+    MenuAPI(string aHeader, vector<string> aOptions);
+    ~MenuAPI();
 
     void setHeader(string aHeader);
     string getHeader() const;

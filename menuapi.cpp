@@ -31,70 +31,70 @@ void printLine(string content, int width, bool active) {
     cout << char(179) << content << char(179) << endl;
 }
 
-Menu::Menu() {
+MenuAPI::MenuAPI() {
     activePosition = 0;
     maxOptionLength = 0;
 }
 
-Menu::Menu(string aHeader) {
+MenuAPI::MenuAPI(string aHeader) {
     header = aHeader;
     activePosition = 0;
     maxOptionLength = 0;
 }
 
-Menu::Menu(string aHeader, vector<string> aOptions) {
+MenuAPI::MenuAPI(string aHeader, vector<string> aOptions) {
     header = aHeader;
     options = aOptions;
     activePosition = 0;
     maxOptionLength = maxLength(aOptions, header.length());
 }
 
-Menu::~Menu() {}
+MenuAPI::~MenuAPI() {}
 
-void Menu::setHeader(string aHeader) {
+void MenuAPI::setHeader(string aHeader) {
     header = aHeader;
 }
 
-string Menu::getHeader() const {
+string MenuAPI::getHeader() const {
     return header;
 }
 
-void Menu::setOptions(vector<string> aOptions) {
+void MenuAPI::setOptions(vector<string> aOptions) {
     options = aOptions;
     maxOptionLength = maxLength(aOptions, header.length());
 }
 
-vector<string> Menu::getOptions() const {
+vector<string> MenuAPI::getOptions() const {
     return options;
 }
 
-string Menu::getOption(int aIdx) const {
+string MenuAPI::getOption(int aIdx) const {
     return options[aIdx];
 }
 
-void Menu::setActivePosition(int aIdx) {
+void MenuAPI::setActivePosition(int aIdx) {
     activePosition = aIdx;
 }
 
-int Menu::getActivePosition() const {
+int MenuAPI::getActivePosition() const {
     return activePosition;
 }
 
-void Menu::addOption(string aOption) {
+void MenuAPI::addOption(string aOption) {
     if (aOption.length() > maxOptionLength) {
         maxOptionLength = aOption.length();
     }
     options.push_back(aOption);
 }
 
-void Menu::addOption(string aOption, int aIdx) {
+void MenuAPI::addOption(string aOption, int aIdx) {
     if (aOption.length() > maxOptionLength) {
         maxOptionLength = aOption.length();
     }
     options.insert(options.begin() + aIdx, aOption);
 }
 
-void Menu::removeOption(int aIdx) {
+void MenuAPI::removeOption(int aIdx) {
     if (maxOptionLength = options[aIdx].length()) {
         options.erase(options.begin() + aIdx);
         maxOptionLength = maxLength(options, header.length());
@@ -103,7 +103,7 @@ void Menu::removeOption(int aIdx) {
     options.erase(options.begin() + aIdx);
 }
 
-void Menu::removeOption(string aOption) {
+void MenuAPI::removeOption(string aOption) {
     for (int i = 0; i < options.size(); i++) {
         if (options[i] == aOption) {
             removeOption(i);
@@ -112,11 +112,11 @@ void Menu::removeOption(string aOption) {
     }
 }
 
-void Menu::resetActivePosition() {
+void MenuAPI::resetActivePosition() {
     activePosition = 0;
 }
 
-void Menu::moveDown() {
+void MenuAPI::moveDown() {
     activePosition++;
     if (activePosition >= options.size()) {
         activePosition = 0;
@@ -124,7 +124,7 @@ void Menu::moveDown() {
     print();
 }
 
-void Menu::moveUp() {
+void MenuAPI::moveUp() {
     activePosition--;
     if (activePosition < 0) {
         activePosition = options.size() - 1;
@@ -132,7 +132,7 @@ void Menu::moveUp() {
     print();
 }
 
-int Menu::exit() {
+int MenuAPI::exit() {
     return activePosition;
 }
 
@@ -146,7 +146,7 @@ BOX CHARACTERS
 ┌   218
 */
 
-void Menu::print() {
+void MenuAPI::print() {
     int menuWidth = maxOptionLength + 4;
     system("CLS");
 
