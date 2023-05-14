@@ -11,7 +11,7 @@ using namespace std;
 
 
 int main() {
-    MenuAPI menu("", {"Home", "Previous", "Next", "Exit"}, KEY_UP, KEY_DOWN, KEY_RIGHT);
-    menu.start();
-    cout << "Selected option: " << menu.getValue() << endl;
+    MenuAPI* menu = new MenuAPI("", {"Home", "Previous", "Next", "Exit"}, KEY_UP, KEY_DOWN, KEY_RIGHT);
+    menu->start();
+    cout << "Selected option: " << menu->getValue() << endl;
 }
