@@ -1,45 +1,27 @@
 #include "menuapi.h"
 #include <iostream>
+#include <conio.h>
 
 using   std::cin,
         std::cout,
         std::endl;
         
 
-
-int maxLength(const vector<string> &strs, int startValue) {
-    int max = startValue;
-    for (int i = 0; i < strs.size(); i++) {
-        if (strs[i].length() > max) {
-            max = strs[i].length();
-        }
-    }
-    return max;
-}
-
-void printLine(string content, int width, bool active) {
-    if (active) {
-        content.insert(content.begin(), '>');
-        content.insert(content.end(), '<');
-    }
-    for (;;) {
-        if (content.length() == width) { break; }
-        content.insert(content.end(), (active) ? char(196) : ' ');
-        if (content.length() == width) { break; }
-        content.insert(content.begin(), (active) ? char(196) : ' ');
-    }
-    cout << char(179) << content << char(179) << endl;
-}
-
 MenuAPI::MenuAPI() {
     activePosition = 0;
     maxOptionLength = 0;
+    nav.down = 's';
+    nav.up = 'w';
+    nav.down = ' ';    
 }
 
 MenuAPI::MenuAPI(string aHeader) {
     header = aHeader;
     activePosition = 0;
     maxOptionLength = 0;
+    nav.down = 's';
+    nav.up = 'w';
+    nav.down = ' ';
 }
 
 MenuAPI::MenuAPI(string aHeader, vector<string> aOptions) {
@@ -47,6 +29,19 @@ MenuAPI::MenuAPI(string aHeader, vector<string> aOptions) {
     options = aOptions;
     activePosition = 0;
     maxOptionLength = maxLength(aOptions, header.length());
+    nav.down = 's';
+    nav.up = 'w';
+    nav.down = ' ';
+}
+
+MenuAPI::MenuAPI(string aHeader, vector<string> aOptions, char up, char down, char enter) {
+    header = aHeader;
+    options = aOptions;
+    activePosition = 0;
+    maxOptionLength = maxLength(aOptions, header.length());
+    nav.up = up;
+    nav.down = down;
+    nav.enter = enter;    
 }
 
 MenuAPI::~MenuAPI() {}
@@ -161,4 +156,50 @@ void MenuAPI::print() {
         printLine(options[i], menuWidth, (i == activePosition));
     }
     cout << char(192) << line << char(217) << endl;
+}
+
+int MenuAPI::maxLength(const vector<string> &strs, int startValue) {
+    int max = startValue;
+    for (int i = 0; i < strs.size(); i++) {
+        if (strs[i].length() > max) {
+            max = strs[i].length();
+        }
+    }
+    return max;
+}
+
+void MenuAPI::printLine(string content, int width, bool active) {
+    if (active) {
+        content.insert(content.begin(), '>');
+        content.insert(content.end(), '<');
+    }
+    for (;;) {
+        if (content.length() == width) { break; }
+        content.insert(content.end(), (active) ? char(196) : ' ');
+        if (content.length() == width) { break; }
+        content.insert(content.begin(), (active) ? char(196) : ' ');
+    }
+    cout << char(179) << content << char(179) << endl;
+}
+
+void MenuAPI::start(){
+    char input;
+    print();
+    for (;;) {
+        input = _getch();
+        if (input == nav.down) { moveDown(); }
+        else if (input == nav.up) { moveUp(); }
+        else if (input == nav.enter) {
+            value = activePosition;
+            break;
+        }
+    }
+}
+
+int MenuAPI::getValue() {
+    return value;
+}
+
+void MenuAPI::setValue(int aValue) {
+    value = aValue;
 }

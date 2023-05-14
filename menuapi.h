@@ -1,10 +1,15 @@
 #include <string>
 #include <vector>
 
-using   std::string, 
-        std::vector;
+using std::string;
+using std::vector;
 
 
+struct Nav {
+    char up;
+    char down;
+    char enter;
+};
 
 class MenuAPI
 {
@@ -12,6 +17,7 @@ public:
     MenuAPI();
     MenuAPI(string aHeader);
     MenuAPI(string aHeader, vector<string> aOptions);
+    MenuAPI(string aHeader, vector<string> aOptions, char up, char down, char enter);
     ~MenuAPI();
 
     void setHeader(string aHeader);
@@ -35,11 +41,18 @@ public:
     void moveUp();
     void print();
 
-protected:
-    string header;
-    vector<string> options;
+    int maxLength(const vector<string> &strs, int startValue);
+    void printLine(string content, int width, bool active);
+
+    void start();
+    int getValue();
+    void setValue(int aValue);
 
 private:
+    string header;
+    vector<string> options;
     int activePosition;
     int maxOptionLength;
+    int value;
+    Nav nav;
 };
