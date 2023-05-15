@@ -222,6 +222,7 @@ void MenuAPI::start(){
             break;
         }
     }
+    system("CLS");
 }
 
 int MenuAPI::getValueIdx() {
