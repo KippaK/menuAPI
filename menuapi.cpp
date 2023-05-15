@@ -44,8 +44,9 @@ MenuAPI::MenuAPI(string aHeader, vector<string> aOptions, Nav aNav, Flags aFlags
     nav.up = aNav.up;
     nav.down = aNav.down;
     nav.enter = aNav.enter;
-    flags.maxWidth = aFlags.maxWidth;
-    flags.center = aFlags.center;
+    flags.stretchX = aFlags.stretchX;
+    flags.centerX = aFlags.centerX;
+    flags.centerY = aFlags.centerY;
 }
 
 MenuAPI::~MenuAPI() {}
@@ -142,19 +143,29 @@ BOX CHARACTERS
 */
 
 void MenuAPI::print() {
-    int menuWidth = maxOptionLength + 4;
-    int fill = 0;
     system("CLS");
-    if (flags.maxWidth) {
+    int menuWidth = maxOptionLength + 4;
+    int fillX = 0, fillY = 0;
+    if (flags.stretchX) {
         int width = 0, height = 0;
         get_terminal_size(width, height);
         menuWidth = width - 2;
     }
-    if (flags.center) {
+    if (flags.centerX) {
         int width = 0, height = 0;
         get_terminal_size(width, height);
-        fill = ceil(width / 2) - floor(menuWidth / 2);
+        fillX = ceil(width / 2) - floor(menuWidth / 2);
     }
+    if (flags.centerY) {
+        int width = 0, height = 0;
+        get_terminal_size(width, height);
+        fillY = ceil(height / 2) - floor((options.size() + 2) / 2);
+    }
+
+    for (int i = 0; i < fillY; i++) {
+        cout << "\n";
+    }
+
     string line(menuWidth, char(196));
     
     string cHeader = header;
@@ -164,13 +175,13 @@ void MenuAPI::print() {
         if (cHeader.length() == menuWidth) { break; }
         cHeader.insert(cHeader.begin(), char(196));
     }
-    cout.width(fill);
+    cout.width(fillX);
     cout << char(218) << cHeader << char(191) << endl;
 
     for (int i = 0; i < options.size(); i++) {
-        printLine(options[i], menuWidth, (i == activePosition), fill);
+        printLine(options[i], menuWidth, (i == activePosition), fillX);
     }
-    cout.width(fill);
+    cout.width(fillX);
     cout << char(192) << line << char(217) << endl;
 }
 

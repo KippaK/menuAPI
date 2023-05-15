@@ -12,8 +12,9 @@ struct Nav {
 };
 
 struct Flags {
-    bool maxWidth; // overrides center flag
-    bool center;
+    bool stretchX; // overrides center flag
+    bool centerX;
+    bool centerY;
 };
 
 class MenuAPI

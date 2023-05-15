@@ -8,8 +8,9 @@
 #define KEY_RIGHT 77
 #define KEY_ENTER 10
 
-#define FULL_WIDTH_MENU false
-#define CENTERED_MENU   true
+#define STRECH_X false
+#define CENTER_X        true
+#define CENTER_Y        true
 
 using std::cin;
 using std::cout;
@@ -17,7 +18,7 @@ using std::endl;
 
 
 int main() {
-    const Flags GLOBAL_FLAGS {FULL_WIDTH_MENU, CENTERED_MENU}; 
+    const Flags GLOBAL_FLAGS {STRECH_X, CENTER_X, CENTER_Y}; 
     MenuAPI* menu = new MenuAPI(
         "", 
         {
