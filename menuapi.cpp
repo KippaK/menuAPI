@@ -1,47 +1,51 @@
 #include "menuapi.h"
 #include <iostream>
 #include <conio.h>
+#include <cmath>
 
 using   std::cin,
         std::cout,
-        std::endl;
+        std::endl,
+        std::floor,
+        std::ceil;
         
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
+#include <Windows.h>
+#elif defined(__linux__)
+#include <sys/ioctl.h>
+#endif // Windows/Linux
+
+void get_terminal_size(int& width, int& height) {
+    #if defined(_WIN32)
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+        width = (int)(csbi.srWindow.Right-csbi.srWindow.Left+1);
+        height = (int)(csbi.srWindow.Bottom-csbi.srWindow.Top+1);
+    #elif defined(__linux__)
+        struct winsize w;
+        ioctl(fileno(stdout), TIOCGWINSZ, &w);
+        width = (int)(w.ws_col);
+        height = (int)(w.ws_row);
+#endif // Windows/Linux
+}
 
 MenuAPI::MenuAPI() {
-    activePosition = 0;
-    maxOptionLength = 0;
-    nav.down = 's';
-    nav.up = 'w';
-    nav.down = ' ';    
+    MenuAPI("", {}, {'w', 's', ' '}, {false, false});
 }
 
-MenuAPI::MenuAPI(string aHeader) {
-    header = aHeader;
-    activePosition = 0;
-    maxOptionLength = 0;
-    nav.down = 's';
-    nav.up = 'w';
-    nav.down = ' ';
-}
-
-MenuAPI::MenuAPI(string aHeader, vector<string> aOptions) {
+MenuAPI::MenuAPI(string aHeader, vector<string> aOptions, Nav aNav, Flags aFlags) {
+    int width = 0, height = 0;
     header = aHeader;
     options = aOptions;
     activePosition = 0;
     maxOptionLength = maxLength(aOptions, header.length());
-    nav.down = 's';
-    nav.up = 'w';
-    nav.down = ' ';
-}
-
-MenuAPI::MenuAPI(string aHeader, vector<string> aOptions, char up, char down, char enter) {
-    header = aHeader;
-    options = aOptions;
-    activePosition = 0;
-    maxOptionLength = maxLength(aOptions, header.length());
-    nav.up = up;
-    nav.down = down;
-    nav.enter = enter;    
+    nav.up = aNav.up;
+    nav.down = aNav.down;
+    nav.enter = aNav.enter;
+    flags.maxWidth = aFlags.maxWidth;
+    flags.center = aFlags.center;
 }
 
 MenuAPI::~MenuAPI() {}
@@ -139,8 +143,18 @@ BOX CHARACTERS
 
 void MenuAPI::print() {
     int menuWidth = maxOptionLength + 4;
+    int fill = 0;
     system("CLS");
-
+    if (flags.maxWidth) {
+        int width = 0, height = 0;
+        get_terminal_size(width, height);
+        menuWidth = width - 2;
+    }
+    if (flags.center) {
+        int width = 0, height = 0;
+        get_terminal_size(width, height);
+        fill = ceil(width / 2) - floor(menuWidth / 2);
+    }
     string line(menuWidth, char(196));
     
     string cHeader = header;
@@ -150,11 +164,13 @@ void MenuAPI::print() {
         if (cHeader.length() == menuWidth) { break; }
         cHeader.insert(cHeader.begin(), char(196));
     }
+    cout.width(fill);
     cout << char(218) << cHeader << char(191) << endl;
 
     for (int i = 0; i < options.size(); i++) {
-        printLine(options[i], menuWidth, (i == activePosition));
+        printLine(options[i], menuWidth, (i == activePosition), fill);
     }
+    cout.width(fill);
     cout << char(192) << line << char(217) << endl;
 }
 
@@ -168,7 +184,7 @@ int MenuAPI::maxLength(const vector<string> &strs, int startValue) {
     return max;
 }
 
-void MenuAPI::printLine(string content, int width, bool active) {
+void MenuAPI::printLine(string content, int width, bool active, int fill) {
     if (active) {
         content.insert(content.begin(), '>');
         content.insert(content.end(), '<');
@@ -179,6 +195,7 @@ void MenuAPI::printLine(string content, int width, bool active) {
         if (content.length() == width) { break; }
         content.insert(content.begin(), (active) ? char(196) : ' ');
     }
+    cout.width(fill);
     cout << char(179) << content << char(179) << endl;
 }
 
@@ -196,8 +213,12 @@ void MenuAPI::start(){
     }
 }
 
-int MenuAPI::getValue() {
+int MenuAPI::getValueIdx() {
     return value;
+}
+
+string MenuAPI::getValueName() {
+    return options[value];
 }
 
 void MenuAPI::setValue(int aValue) {

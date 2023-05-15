@@ -11,13 +11,19 @@ struct Nav {
     char enter;
 };
 
+struct Flags {
+    bool maxWidth; // overrides center flag
+    bool center;
+};
+
 class MenuAPI
 {
 public:
     MenuAPI();
-    MenuAPI(string aHeader);
-    MenuAPI(string aHeader, vector<string> aOptions);
-    MenuAPI(string aHeader, vector<string> aOptions, char up, char down, char enter);
+    MenuAPI(    string aHeader, 
+                vector<string> aOptions, 
+                Nav aNav,
+                Flags Flags);
     ~MenuAPI();
 
     void setHeader(string aHeader);
@@ -42,10 +48,11 @@ public:
     void print();
 
     int maxLength(const vector<string> &strs, int startValue);
-    void printLine(string content, int width, bool active);
+    void printLine(string content, int width, bool active, int fill);
 
     void start();
-    int getValue();
+    int getValueIdx();
+    string getValueName();
     void setValue(int aValue);
 
 private:
@@ -55,4 +62,5 @@ private:
     int maxOptionLength;
     int value;
     Nav nav;
+    Flags flags;
 };
