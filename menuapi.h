@@ -12,7 +12,8 @@ struct Nav {
 };
 
 struct Flags {
-    bool stretchX; // overrides center flag
+    bool stretchX;
+    bool stretchY;
     bool centerX;
     bool centerY;
 };

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <conio.h>
 #include <cmath>
+#include <windows.h>
 
 using   std::cin,
         std::cout,
@@ -31,8 +32,20 @@ void get_terminal_size(int& width, int& height) {
 #endif // Windows/Linux
 }
 
+void ShowConsoleCursor(bool showFlag) {
+    #if defined(_WIN32)
+        HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+        CONSOLE_CURSOR_INFO     cursorInfo;
+        GetConsoleCursorInfo(out, &cursorInfo);
+        cursorInfo.bVisible = showFlag;
+        SetConsoleCursorInfo(out, &cursorInfo);
+    #elif defined(__linux__)
+    // TODO
+#endif
+}
+
 MenuAPI::MenuAPI() {
-    MenuAPI("", {}, {'w', 's', ' '}, {false, false});
+    MenuAPI("", {}, {'w', 's', ' '}, {false, false, false, false});
 }
 
 MenuAPI::MenuAPI(string aHeader, vector<string> aOptions, Nav aNav, Flags aFlags) {
@@ -45,6 +58,7 @@ MenuAPI::MenuAPI(string aHeader, vector<string> aOptions, Nav aNav, Flags aFlags
     nav.down = aNav.down;
     nav.enter = aNav.enter;
     flags.stretchX = aFlags.stretchX;
+    flags.stretchY = aFlags.stretchY;
     flags.centerX = aFlags.centerX;
     flags.centerY = aFlags.centerY;
 }
@@ -145,24 +159,26 @@ BOX CHARACTERS
 void MenuAPI::print() {
     system("CLS");
     int menuWidth = maxOptionLength + 4;
-    int fillX = 0, fillY = 0;
+    int paddingX = 0, paddingY = 0;
+    int fillTop = 0, fillBottom = 0; 
+    int width = 0, height = 0;
+    get_terminal_size(width, height);
     if (flags.stretchX) {
-        int width = 0, height = 0;
-        get_terminal_size(width, height);
         menuWidth = width - 2;
     }
     if (flags.centerX) {
-        int width = 0, height = 0;
-        get_terminal_size(width, height);
-        fillX = ceil(width / 2) - floor(menuWidth / 2);
+        paddingX = ceil(width / 2) - floor(menuWidth / 2);
     }
     if (flags.centerY) {
-        int width = 0, height = 0;
-        get_terminal_size(width, height);
-        fillY = ceil(height / 2) - floor((options.size() + 2) / 2);
+        paddingY = ceil(height / 2) - floor((options.size() + 2) / 2);
+    }
+    if (flags.stretchY) {
+        fillTop = floor((height - 2 - options.size()) / 2);
+        fillBottom = ceil((height - 2 - options.size()) / 2);
     }
 
-    for (int i = 0; i < fillY; i++) {
+
+    for (int i = 0; i < paddingY; i++) {
         cout << "\n";
     }
 
@@ -175,14 +191,21 @@ void MenuAPI::print() {
         if (cHeader.length() == menuWidth) { break; }
         cHeader.insert(cHeader.begin(), char(196));
     }
-    cout.width(fillX);
+    cout.width(paddingX);
+        
     cout << char(218) << cHeader << char(191) << endl;
 
-    for (int i = 0; i < options.size(); i++) {
-        printLine(options[i], menuWidth, (i == activePosition), fillX);
+    for (int i = 0; i < fillTop; i++) {
+        printLine("", menuWidth, false, paddingX);
     }
-    cout.width(fillX);
-    cout << char(192) << line << char(217) << endl;
+    for (int i = 0; i < options.size(); i++) {
+        printLine(options[i], menuWidth, (i == activePosition), paddingX);
+    }
+    for (int i = 0; i < fillBottom; i++) {
+        printLine("", menuWidth, false, paddingX);
+    }
+    cout.width(paddingX);
+    cout << char(192) << line << char(217);
 }
 
 int MenuAPI::maxLength(const vector<string> &strs, int startValue) {
@@ -211,6 +234,7 @@ void MenuAPI::printLine(string content, int width, bool active, int fill) {
 }
 
 void MenuAPI::start(){
+    ShowConsoleCursor(false);
     char input;
     print();
     for (;;) {
@@ -223,6 +247,7 @@ void MenuAPI::start(){
         }
     }
     system("CLS");
+    ShowConsoleCursor(true);
 }
 
 int MenuAPI::getValueIdx() {

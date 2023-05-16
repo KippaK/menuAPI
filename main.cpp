@@ -8,9 +8,11 @@
 #define KEY_RIGHT 77
 #define KEY_ENTER 10
 
-#define STRECH_X false
-#define CENTER_X        true
-#define CENTER_Y        true
+#define STRECH_X    false
+#define STRECH_Y    false
+#define CENTER_X    true
+#define CENTER_Y    true
+
 
 using std::cin;
 using std::cout;
@@ -18,7 +20,7 @@ using std::endl;
 
 
 int main() {
-    const Flags GLOBAL_FLAGS {STRECH_X, CENTER_X, CENTER_Y}; 
+    const Flags GLOBAL_FLAGS {STRECH_X, STRECH_Y, CENTER_X, CENTER_Y};
     MenuAPI* menu = new MenuAPI(
         "", 
         {
@@ -28,12 +30,13 @@ int main() {
             "Exit"
         },
         {
-            KEY_UP, 
-            KEY_DOWN, 
+            'w', 
+            's', 
             ' '
         },
         GLOBAL_FLAGS
     );
     menu->start();
     cout << "Selected option: " << menu->getValueName() << endl;
+    cout << "Index of selected option: " << menu->getValueIdx() << endl;
 }
