@@ -22,10 +22,17 @@ class MenuAPI
 {
 public:
     MenuAPI();
-    MenuAPI(    string aHeader, 
-                vector<string> aOptions, 
-                Nav aNav,
-                Flags Flags);
+    MenuAPI(    
+        string aHeader,
+        vector<string> aOptions,
+        Nav aNav
+    );
+    MenuAPI(
+        string aHeader,
+        vector<string> aOptions, 
+        Nav aNav,
+        Flags Flags
+    );
     ~MenuAPI();
 
     void setHeader(string aHeader);

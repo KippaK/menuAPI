@@ -48,6 +48,10 @@ MenuAPI::MenuAPI() {
     MenuAPI("", {}, {'w', 's', ' '}, {false, false, false, false});
 }
 
+MenuAPI::MenuAPI(string aHeader, vector<string> aOptions, Nav aNav) {
+    MenuAPI(aHeader, aOptions, aNav, {false, false, false, false});
+}
+
 MenuAPI::MenuAPI(string aHeader, vector<string> aOptions, Nav aNav, Flags aFlags) {
     value = -1;
     header = aHeader;
