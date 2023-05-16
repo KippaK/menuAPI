@@ -49,7 +49,7 @@ MenuAPI::MenuAPI() {
 }
 
 MenuAPI::MenuAPI(string aHeader, vector<string> aOptions, Nav aNav, Flags aFlags) {
-    int width = 0, height = 0;
+    value = -1;
     header = aHeader;
     options = aOptions;
     activePosition = 0;
@@ -235,6 +235,7 @@ void MenuAPI::printLine(string content, int width, bool active, int fill) {
 
 void MenuAPI::start(){
     ShowConsoleCursor(false);
+    value = -1;
     char input;
     print();
     for (;;) {
@@ -255,6 +256,7 @@ int MenuAPI::getValueIdx() {
 }
 
 string MenuAPI::getValueName() {
+    if (value < 0) {return "ERROR: option wasn't selected\n"; }
     return options[value];
 }
 
