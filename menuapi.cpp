@@ -2,7 +2,6 @@
 #include <iostream>
 #include <conio.h>
 #include <cmath>
-#include <windows.h>
 
 using   std::cin,
         std::cout,
@@ -15,10 +14,11 @@ using   std::cin,
 #define VC_EXTRALEAN
 #include <Windows.h>
 #elif defined(__linux__)
-#include <sys/ioctl.h>
+#include <unistd.h>
+#include <sstream>
 #endif // Windows/Linux
 
-void get_terminal_size(int& width, int& height) {
+void MenuAPI::getTerminalSize(int& width, int& height) {
     #if defined(_WIN32)
         CONSOLE_SCREEN_BUFFER_INFO csbi;
         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
@@ -32,7 +32,7 @@ void get_terminal_size(int& width, int& height) {
 #endif // Windows/Linux
 }
 
-void ShowConsoleCursor(bool showFlag) {
+void MenuAPI::SetCursorVisibility(bool showFlag) const {
     #if defined(_WIN32)
         HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
         CONSOLE_CURSOR_INFO     cursorInfo;
@@ -40,7 +40,13 @@ void ShowConsoleCursor(bool showFlag) {
         cursorInfo.bVisible = showFlag;
         SetConsoleCursorInfo(out, &cursorInfo);
     #elif defined(__linux__)
-    // TODO
+        std::ostringstream os;
+        os << "\033[?25]";
+        if (showFlag) {
+            oss << "h";
+        } else {
+            oss << "l";
+        }
 #endif
 }
 
@@ -58,13 +64,8 @@ MenuAPI::MenuAPI(string aHeader, vector<string> aOptions, Nav aNav, Flags aFlags
     options = aOptions;
     activePosition = 0;
     maxOptionLength = maxLength(aOptions, header.length());
-    nav.up = aNav.up;
-    nav.down = aNav.down;
-    nav.enter = aNav.enter;
-    flags.stretchX = aFlags.stretchX;
-    flags.stretchY = aFlags.stretchY;
-    flags.centerX = aFlags.centerX;
-    flags.centerY = aFlags.centerY;
+    nav = aNav;
+    flags = aFlags;
 }
 
 MenuAPI::~MenuAPI() {}
@@ -166,7 +167,7 @@ void MenuAPI::print() {
     int paddingX = 0, paddingY = 0;
     int fillTop = 0, fillBottom = 0; 
     int width = 0, height = 0;
-    get_terminal_size(width, height);
+    getTerminalSize(width, height);
     if (flags.stretchX) {
         menuWidth = width - 2;
     }
@@ -238,7 +239,7 @@ void MenuAPI::printLine(string content, int width, bool active, int fill) {
 }
 
 void MenuAPI::start(){
-    ShowConsoleCursor(false);
+    SetCursorVisibility(false);
     value = -1;
     char input;
     print();
@@ -252,7 +253,7 @@ void MenuAPI::start(){
         }
     }
     system("CLS");
-    ShowConsoleCursor(true);
+    SetCursorVisibility(true);
 }
 
 int MenuAPI::getValueIdx() {

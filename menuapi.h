@@ -20,6 +20,9 @@ struct Flags {
 
 class MenuAPI
 {
+private:
+    void getTerminalSize(int& width, int& height);
+    void SetCursorVisibility(bool showFlag) const;
 public:
     MenuAPI();
     MenuAPI(    
