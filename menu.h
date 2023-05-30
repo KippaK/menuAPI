@@ -18,25 +18,25 @@ struct Flags {
     bool centerY;
 };
 
-class MenuAPI
+class Menu
 {
 private:
     void getTerminalSize(int& width, int& height);
     void SetCursorVisibility(bool showFlag) const;
 public:
-    MenuAPI();
-    MenuAPI(    
+    Menu();
+    Menu(    
         string aHeader,
         vector<string> aOptions,
         Nav aNav
     );
-    MenuAPI(
+    Menu(
         string aHeader,
         vector<string> aOptions, 
         Nav aNav,
         Flags Flags
     );
-    ~MenuAPI();
+    ~Menu();
 
     void setHeader(string aHeader);
     string getHeader() const;

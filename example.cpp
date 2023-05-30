@@ -1,7 +1,7 @@
 #include <iostream>
 #include <conio.h>
 #include <cstdlib>
-#include "menuapi.h"
+#include "menu.h"
 
 #if defined(_WIN32)
 #define WIN32_LEAN_AND_MEAN
@@ -40,7 +40,7 @@ void closeWindow() {
 
 int main() {
     const Flags GLOBAL_FLAGS {STRECH_X, STRECH_Y, CENTER_X, CENTER_Y};
-    MenuAPI* menu = new MenuAPI(
+    Menu* menu = new Menu(
         "", 
         {
             "Home", 

@@ -1,4 +1,4 @@
-#include "menuapi.h"
+#include "menu.h"
 #include <iostream>
 #include <conio.h>
 #include <cmath>
@@ -18,7 +18,7 @@ using   std::cin,
 #include <sstream>
 #endif // Windows/Linux
 
-void MenuAPI::getTerminalSize(int& width, int& height) {
+void Menu::getTerminalSize(int& width, int& height) {
     #if defined(_WIN32)
         CONSOLE_SCREEN_BUFFER_INFO csbi;
         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
@@ -32,7 +32,7 @@ void MenuAPI::getTerminalSize(int& width, int& height) {
 #endif // Windows/Linux
 }
 
-void MenuAPI::SetCursorVisibility(bool showFlag) const {
+void Menu::SetCursorVisibility(bool showFlag) const {
     #if defined(_WIN32)
         HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
         CONSOLE_CURSOR_INFO     cursorInfo;
@@ -50,15 +50,15 @@ void MenuAPI::SetCursorVisibility(bool showFlag) const {
 #endif
 }
 
-MenuAPI::MenuAPI() {
-    MenuAPI("", {}, {'w', 's', ' '}, {false, false, false, false});
+Menu::Menu() {
+    Menu("", {}, {'w', 's', ' '}, {false, false, false, false});
 }
 
-MenuAPI::MenuAPI(string aHeader, vector<string> aOptions, Nav aNav) {
-    MenuAPI(aHeader, aOptions, aNav, {false, false, false, false});
+Menu::Menu(string aHeader, vector<string> aOptions, Nav aNav) {
+    Menu(aHeader, aOptions, aNav, {false, false, false, false});
 }
 
-MenuAPI::MenuAPI(string aHeader, vector<string> aOptions, Nav aNav, Flags aFlags) {
+Menu::Menu(string aHeader, vector<string> aOptions, Nav aNav, Flags aFlags) {
     value = -1;
     header = aHeader;
     options = aOptions;
@@ -68,52 +68,52 @@ MenuAPI::MenuAPI(string aHeader, vector<string> aOptions, Nav aNav, Flags aFlags
     flags = aFlags;
 }
 
-MenuAPI::~MenuAPI() {}
+Menu::~Menu() {}
 
-void MenuAPI::setHeader(string aHeader) {
+void Menu::setHeader(string aHeader) {
     header = aHeader;
 }
 
-string MenuAPI::getHeader() const {
+string Menu::getHeader() const {
     return header;
 }
 
-void MenuAPI::setOptions(vector<string> aOptions) {
+void Menu::setOptions(vector<string> aOptions) {
     options = aOptions;
     maxOptionLength = maxLength(aOptions, header.length());
 }
 
-vector<string> MenuAPI::getOptions() const {
+vector<string> Menu::getOptions() const {
     return options;
 }
 
-string MenuAPI::getOption(int aIdx) const {
+string Menu::getOption(int aIdx) const {
     return options[aIdx];
 }
 
-void MenuAPI::setActivePosition(int aIdx) {
+void Menu::setActivePosition(int aIdx) {
     activePosition = aIdx;
 }
 
-int MenuAPI::getActivePosition() const {
+int Menu::getActivePosition() const {
     return activePosition;
 }
 
-void MenuAPI::addOption(string aOption) {
+void Menu::addOption(string aOption) {
     if (aOption.length() > maxOptionLength) {
         maxOptionLength = aOption.length();
     }
     options.push_back(aOption);
 }
 
-void MenuAPI::addOption(string aOption, int aIdx) {
+void Menu::addOption(string aOption, int aIdx) {
     if (aOption.length() > maxOptionLength) {
         maxOptionLength = aOption.length();
     }
     options.insert(options.begin() + aIdx, aOption);
 }
 
-void MenuAPI::removeOption(int aIdx) {
+void Menu::removeOption(int aIdx) {
     if (maxOptionLength = options[aIdx].length()) {
         options.erase(options.begin() + aIdx);
         maxOptionLength = maxLength(options, header.length());
@@ -122,7 +122,7 @@ void MenuAPI::removeOption(int aIdx) {
     options.erase(options.begin() + aIdx);
 }
 
-void MenuAPI::removeOption(string aOption) {
+void Menu::removeOption(string aOption) {
     for (int i = 0; i < options.size(); i++) {
         if (options[i] == aOption) {
             removeOption(i);
@@ -131,11 +131,11 @@ void MenuAPI::removeOption(string aOption) {
     }
 }
 
-void MenuAPI::resetActivePosition() {
+void Menu::resetActivePosition() {
     activePosition = 0;
 }
 
-void MenuAPI::moveDown() {
+void Menu::moveDown() {
     activePosition++;
     if (activePosition >= options.size()) {
         activePosition = 0;
@@ -143,7 +143,7 @@ void MenuAPI::moveDown() {
     print();
 }
 
-void MenuAPI::moveUp() {
+void Menu::moveUp() {
     activePosition--;
     if (activePosition < 0) {
         activePosition = options.size() - 1;
@@ -161,7 +161,7 @@ BOX CHARACTERS
 ┌   218
 */
 
-void MenuAPI::print() {
+void Menu::print() {
     system("CLS");
     int menuWidth = maxOptionLength + 4;
     int paddingX = 0, paddingY = 0;
@@ -213,7 +213,7 @@ void MenuAPI::print() {
     cout << char(192) << line << char(217);
 }
 
-int MenuAPI::maxLength(const vector<string> &strs, int startValue) {
+int Menu::maxLength(const vector<string> &strs, int startValue) {
     int max = startValue;
     for (int i = 0; i < strs.size(); i++) {
         if (strs[i].length() > max) {
@@ -223,7 +223,7 @@ int MenuAPI::maxLength(const vector<string> &strs, int startValue) {
     return max;
 }
 
-void MenuAPI::printLine(string content, int width, bool active, int fill) {
+void Menu::printLine(string content, int width, bool active, int fill) {
     if (active) {
         content.insert(content.begin(), '>');
         content.insert(content.end(), '<');
@@ -238,7 +238,7 @@ void MenuAPI::printLine(string content, int width, bool active, int fill) {
     cout << char(179) << content << char(179) << endl;
 }
 
-void MenuAPI::start(){
+void Menu::start(){
     SetCursorVisibility(false);
     value = -1;
     char input;
@@ -256,15 +256,15 @@ void MenuAPI::start(){
     SetCursorVisibility(true);
 }
 
-int MenuAPI::getValueIdx() {
+int Menu::getValueIdx() {
     return value;
 }
 
-string MenuAPI::getValueName() {
+string Menu::getValueName() {
     if (value < 0) {return "ERROR: option wasn't selected\n"; }
     return options[value];
 }
 
-void MenuAPI::setValue(int aValue) {
+void Menu::setValue(int aValue) {
     value = aValue;
 }
