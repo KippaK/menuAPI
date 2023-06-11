@@ -18,7 +18,7 @@ using   std::cin,
 #include <sstream>
 #endif // Windows/Linux
 
-void Menu::getTerminalSize(int& width, int& height) {
+void Menu::Select::getTerminalSize(int& width, int& height) {
     #if defined(_WIN32)
         CONSOLE_SCREEN_BUFFER_INFO csbi;
         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
@@ -32,7 +32,7 @@ void Menu::getTerminalSize(int& width, int& height) {
 #endif // Windows/Linux
 }
 
-void Menu::SetCursorVisibility(bool showFlag) const {
+void Menu::Select::SetCursorVisibility(bool showFlag) const {
     #if defined(_WIN32)
         HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
         CONSOLE_CURSOR_INFO     cursorInfo;
@@ -50,15 +50,15 @@ void Menu::SetCursorVisibility(bool showFlag) const {
 #endif
 }
 
-Menu::Menu() {
-    Menu("", {}, {'w', 's', ' '}, {false, false, false, false});
+Menu::Select::Select() {
+    Select("", {}, {'w', 's', ' '}, {false, false, false, false});
 }
 
-Menu::Menu(string aHeader, vector<string> aOptions, Nav aNav) {
-    Menu(aHeader, aOptions, aNav, {false, false, false, false});
+Menu::Select::Select(string aHeader, vector<string> aOptions, Nav aNav) {
+    Select(aHeader, aOptions, aNav, {false, false, false, false});
 }
 
-Menu::Menu(string aHeader, vector<string> aOptions, Nav aNav, Flags aFlags) {
+Menu::Select::Select(string aHeader, vector<string> aOptions, Nav aNav, Flags aFlags) {
     value = -1;
     header = aHeader;
     options = aOptions;
@@ -68,52 +68,52 @@ Menu::Menu(string aHeader, vector<string> aOptions, Nav aNav, Flags aFlags) {
     flags = aFlags;
 }
 
-Menu::~Menu() {}
+Menu::Select::~Select() {}
 
-void Menu::setHeader(string aHeader) {
+void Menu::Select::setHeader(string aHeader) {
     header = aHeader;
 }
 
-string Menu::getHeader() const {
+string Menu::Select::getHeader() const {
     return header;
 }
 
-void Menu::setOptions(vector<string> aOptions) {
+void Menu::Select::setOptions(vector<string> aOptions) {
     options = aOptions;
     maxOptionLength = maxLength(aOptions, header.length());
 }
 
-vector<string> Menu::getOptions() const {
+vector<string> Menu::Select::getOptions() const {
     return options;
 }
 
-string Menu::getOption(int aIdx) const {
+string Menu::Select::getOption(int aIdx) const {
     return options[aIdx];
 }
 
-void Menu::setActivePosition(int aIdx) {
+void Menu::Select::setActivePosition(int aIdx) {
     activePosition = aIdx;
 }
 
-int Menu::getActivePosition() const {
+int Menu::Select::getActivePosition() const {
     return activePosition;
 }
 
-void Menu::addOption(string aOption) {
+void Menu::Select::addOption(string aOption) {
     if (aOption.length() > maxOptionLength) {
         maxOptionLength = aOption.length();
     }
     options.push_back(aOption);
 }
 
-void Menu::addOption(string aOption, int aIdx) {
+void Menu::Select::addOption(string aOption, int aIdx) {
     if (aOption.length() > maxOptionLength) {
         maxOptionLength = aOption.length();
     }
     options.insert(options.begin() + aIdx, aOption);
 }
 
-void Menu::removeOption(int aIdx) {
+void Menu::Select::removeOption(int aIdx) {
     if (maxOptionLength = options[aIdx].length()) {
         options.erase(options.begin() + aIdx);
         maxOptionLength = maxLength(options, header.length());
@@ -122,7 +122,7 @@ void Menu::removeOption(int aIdx) {
     options.erase(options.begin() + aIdx);
 }
 
-void Menu::removeOption(string aOption) {
+void Menu::Select::removeOption(string aOption) {
     for (int i = 0; i < options.size(); i++) {
         if (options[i] == aOption) {
             removeOption(i);
@@ -131,11 +131,11 @@ void Menu::removeOption(string aOption) {
     }
 }
 
-void Menu::resetActivePosition() {
+void Menu::Select::resetActivePosition() {
     activePosition = 0;
 }
 
-void Menu::moveDown() {
+void Menu::Select::moveDown() {
     activePosition++;
     if (activePosition >= options.size()) {
         activePosition = 0;
@@ -143,7 +143,7 @@ void Menu::moveDown() {
     print();
 }
 
-void Menu::moveUp() {
+void Menu::Select::moveUp() {
     activePosition--;
     if (activePosition < 0) {
         activePosition = options.size() - 1;
@@ -161,7 +161,7 @@ BOX CHARACTERS
 ┌   218
 */
 
-void Menu::print() {
+void Menu::Select::print() {
     system("CLS");
     int menuWidth = maxOptionLength + 4;
     int paddingX = 0, paddingY = 0;
@@ -213,7 +213,7 @@ void Menu::print() {
     cout << char(192) << line << char(217);
 }
 
-int Menu::maxLength(const vector<string> &strs, int startValue) {
+int Menu::Select::maxLength(const vector<string> &strs, int startValue) {
     int max = startValue;
     for (int i = 0; i < strs.size(); i++) {
         if (strs[i].length() > max) {
@@ -223,7 +223,7 @@ int Menu::maxLength(const vector<string> &strs, int startValue) {
     return max;
 }
 
-void Menu::printLine(string content, int width, bool active, int fill) {
+void Menu::Select::printLine(string content, int width, bool active, int fill) {
     if (active) {
         content.insert(content.begin(), '>');
         content.insert(content.end(), '<');
@@ -238,7 +238,7 @@ void Menu::printLine(string content, int width, bool active, int fill) {
     cout << char(179) << content << char(179) << endl;
 }
 
-void Menu::start(){
+void Menu::Select::start(){
     SetCursorVisibility(false);
     value = -1;
     char input;
@@ -256,15 +256,15 @@ void Menu::start(){
     SetCursorVisibility(true);
 }
 
-int Menu::getValueIdx() {
+int Menu::Select::getValueIdx() {
     return value;
 }
 
-string Menu::getValueName() {
+string Menu::Select::getValueName() {
     if (value < 0) {return "ERROR: option wasn't selected\n"; }
     return options[value];
 }
 
-void Menu::setValue(int aValue) {
+void Menu::Select::setValue(int aValue) {
     value = aValue;
 }

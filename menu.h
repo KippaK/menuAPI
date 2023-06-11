@@ -4,7 +4,8 @@
 using std::string;
 using std::vector;
 
-
+namespace Menu
+{
 struct Nav {
     char up;
     char down;
@@ -18,25 +19,25 @@ struct Flags {
     bool centerY;
 };
 
-class Menu
+class Select
 {
 private:
     void getTerminalSize(int& width, int& height);
     void SetCursorVisibility(bool showFlag) const;
 public:
-    Menu();
-    Menu(    
+    Select();
+    Select(    
         string aHeader,
         vector<string> aOptions,
         Nav aNav
     );
-    Menu(
+    Select(
         string aHeader,
         vector<string> aOptions, 
         Nav aNav,
         Flags Flags
     );
-    ~Menu();
+    ~Select();
 
     void setHeader(string aHeader);
     string getHeader() const;
@@ -76,3 +77,4 @@ private:
     Nav nav;
     Flags flags;
 };
+}; // namespace Menu

@@ -39,8 +39,8 @@ void closeWindow() {
 }
 
 int main() {
-    const Flags GLOBAL_FLAGS {STRECH_X, STRECH_Y, CENTER_X, CENTER_Y};
-    Menu* menu = new Menu(
+    const Menu::Flags GLOBAL_FLAGS {STRECH_X, STRECH_Y, CENTER_X, CENTER_Y};
+    Menu::Select* menu = new Menu::Select(
         "", 
         {
             "Home", 
