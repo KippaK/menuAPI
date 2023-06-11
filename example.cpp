@@ -40,6 +40,18 @@ void closeWindow() {
 
 int main() {
     const Menu::Flags GLOBAL_FLAGS {STRECH_X, STRECH_Y, CENTER_X, CENTER_Y};
+    
+    Menu::Input* menu = new Menu::Input(
+        "Input",
+        GLOBAL_FLAGS
+    );
+    menu->start();
+    cout << "String entered: " << menu->getString() << endl;
+    cout << "Press any key to exit";
+    getch();
+    closeWindow();
+    
+    #if 0
     Menu::Select* menu = new Menu::Select(
         "", 
         {
@@ -61,4 +73,5 @@ int main() {
     cout << "Press any key to exit";
     _getch();
     closeWindow();
+    #endif
 }

@@ -1,3 +1,5 @@
+#include "terminal_operations.h"
+
 #include <string>
 #include <vector>
 
@@ -19,11 +21,8 @@ struct Flags {
     bool centerY;
 };
 
-class Select
+class Select : public TerminalOperations
 {
-private:
-    void getTerminalSize(int& width, int& height);
-    void SetCursorVisibility(bool showFlag) const;
 public:
     Select();
     Select(    
@@ -58,10 +57,10 @@ public:
 
     void moveDown();
     void moveUp();
-    void print();
+    void print() const;
 
-    int maxLength(const vector<string> &strs, int startValue);
-    void printLine(string content, int width, bool active, int fill);
+    int maxLength(const vector<string> &strs, int startValue) const;
+    void printLine(string content, int width, bool active, int fill) const;
 
     void start();
     int getValueIdx();
@@ -75,6 +74,33 @@ private:
     int maxOptionLength;
     int value;
     Nav nav;
+    Flags flags;
+};
+
+class Input : public TerminalOperations
+{
+private:
+    bool validKeyPress(char c) const;
+    void printCharXtimes(char c, uint16_t count) const;
+    void printFillLine(int count, int menuWidth) const;
+public:
+    Input();
+    Input(string aHeader, Flags aFlags);
+    Input(string aHeader, uint16_t aMaxStrLen, Flags aFlags);
+
+    void setHeader(string aHeader);
+    string getHeader() const;
+
+    void print(string input) const;
+
+    void start();
+
+    string getString() const;
+    
+private:
+    string header;
+    uint16_t maxStrLen;
+    string str;
     Flags flags;
 };
 }; // namespace Menu
