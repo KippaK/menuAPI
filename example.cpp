@@ -43,6 +43,7 @@ int main() {
     
     Menu::Input* menu = new Menu::Input(
         "Input",
+        10,
         GLOBAL_FLAGS
     );
     menu->start();
